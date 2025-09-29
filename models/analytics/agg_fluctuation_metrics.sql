@@ -5,31 +5,15 @@
 ] %}
 
 
-WITH get_fluctations AS (
-    SELECT
-        employee_id
-        , hire_date as event_date
-        , 'Hire' as event_type 
-    FROM {{ ref('employees') }}
-
-    UNION ALL 
-
-    SELECT 
-        employee_id 
-        , exit_date as event_date 
-        , 'Departure' as event_type 
-    FROM {{ ref('departures') }}
-    )
-
-, time_period_fluctuations as (
+WITH time_period_fluctuations as (
     {% for time_period in time_periods %}
     SELECT 
         '{{ time_period }}' as time_period
         , DATE_TRUNC('{{ time_period }}', event_date) as event_start_date
         , DATE_TRUNC('{{ time_period }}', event_date) = DATE_TRUNC('{{ time_period }}', CURRENT_DATE()) as is_current_period
-        , SUM(CASE WHEN event_type = 'Hire' THEN 1 ELSE 0 END) as new_hires 
-        , SUM(CASE WHEN event_type = 'Departure' THEN 1 ELSE 0 END) as departures
-    FROM get_fluctations
+        , COUNT(DISTINCT CASE WHEN event_type = 'Hire' THEN employee_id END) as new_hires 
+        , COUNT(DISTINCT CASE WHEN event_type = 'Departure' THEN employee_id END) as departures
+    FROM {{ ref('employee_fluctuations') }}
     GROUP BY ALL
     {% if not loop.last %}UNION ALL{% endif %}
     {% endfor %}
@@ -62,7 +46,7 @@ WITH get_fluctations AS (
 SELECT 
     *
     ,(departures - previous_departures) as net_change_departures
-    ,(departures - previous_departures) / NULLIF(previous_departures, 0) as percent_departures
+    ,(departures - previous_departures) / NULLIF(previous_departures, 0) as percent_change_departures
     ,(headcount - previous_headcount) as net_change_headcount
     ,(headcount - previous_headcount) / NULLIF(previous_headcount, 0) as percent_change_headcount
 FROM get_previous_period_headcount
