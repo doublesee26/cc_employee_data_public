@@ -1,0 +1,23 @@
+version: 2
+
+exposures:
+  - name: employee_fluctuation_tableau_report
+    label: 'Employee Fluctuation Dashboard'
+    type: dashboard
+    maturity: high
+    # Replace this URL with the actual link to your Tableau dashboard
+    url: https://public.tableau.com/app/profile/starschema/viz/Fluctuationreport/Fluctuationreport
+    description: >
+      The primary dashboard used by HR and Operations to monitor employee movement 
+      (Hires, Leavers, Headcount) and analyze departures by Generation, Tenure, and Reason.
+      
+    # Define the owner/maintainer of the report
+    owner:
+      name: HR Analytics Team
+      email: tbd
+      
+    # Define the dbt models this exposure relies on
+    depends_on:
+      - ref('agg_departure_metrics')
+      - ref('agg_fluctuation_metrics')
+      - ref('agg_fluctuation_metrics_by_department')

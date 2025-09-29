@@ -1,0 +1,14 @@
+version: 2
+
+sources:
+  - name: employee_db_bronze
+    database: EMPLOYEE_DB
+    schema: BRONZE
+    tables:
+      - name: departments
+      - name: departures
+      - name: dept_emp
+      - name: dept_manager
+      - name: employees
+      - name: salaries
+      - name: titles

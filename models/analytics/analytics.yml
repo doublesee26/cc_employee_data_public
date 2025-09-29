@@ -1,0 +1,92 @@
+version: 2
+
+models:
+  # =========================================================================
+  # agg_departure_metrics (Powers 'Who left?' and 'When did they leave?')
+  # =========================================================================
+  - name: agg_departure_metrics
+    description: >
+      A detailed snapshot of every departed employee, pre-calculating age, generation, and tenure. 
+      This model is used to slice leavers by demographic attributes (Generation, Tenure) and 
+      Exit Reason for the detailed "Where, who and why left?" analysis charts.
+    
+    columns:
+      - name: employee_id
+        description: "{{ doc('employee_id_doc') }}"
+        tests:
+          - unique
+          - not_null
+      - name: birth_date
+        description: "{{ doc('birth_date_doc') }}"
+      - name: employee_age
+        description: Employee's age at the current date. Use this for age distribution analysis.
+      - name: employee_generation
+        description: Categorical grouping of the employee (e.g., 'Millennials (Gen Y)', 'Generation X'). 
+                     Used to build the 'Which generation left?' donut chart.
+      - name: hire_date
+      - name: exit_date
+        description: "{{ doc('exit_date_doc') }}"
+      - name: exit_reason_code
+        description: "{{ doc('exit_reason_code_doc') }}"
+      - name: tenure_years
+        description: Employee's total years of service (Years between Hire Date and Exit Date).
+      - name: tenure_group
+        description: Categorical grouping of tenure (e.g., '< 1', '1-2', '5+'). 
+                     Used to build the 'When did they leave?' scatter plot.
+      
+  # =========================================================================
+  # agg_fluctuation_metrics (Powers the Header/KPI Boxes and Line Chart)
+  # =========================================================================
+  - name: agg_fluctuation_metrics
+    description: >
+      Time-series aggregation of New Hires (Flows) and Headcount (Inventory) across all departments 
+      for Month, Quarter, and Year. This model is ideal for the high-level KPI cards and trend line charts.
+    
+    columns:
+      - name: time_period
+        description: "{{ doc('agg_time_period') }}"
+      - name: event_start_date
+        description: "{{ doc('agg_event_start_date') }}"
+      - name: is_current_period
+        description: "{{ doc('agg_is_current_period') }}"
+      - name: new_hires
+        description: "{{ doc('agg_new_hires') }}"
+      - name: departures
+        description: "{{ doc('agg_departures') }}"
+      - name: previous_departures
+        description: "{{ doc('agg_previous_departures') }}"
+      - name: net_change_departures
+        description: "{{ doc('agg_net_change_departures') }}"
+      - name: percent_change_departures
+        description: "{{ doc('agg_percent_change_departures') }}"
+      - name: headcount
+        description: "{{ doc('agg_headcount') }}"
+      - name: previous_headcount
+        description: "{{ doc('agg_previous_headcount') }}"
+      - name: net_change_headcount
+        description: "{{ doc('agg_net_change_headcount') }}"
+      - name: percent_change_headcount
+        description: "{{ doc('agg_percent_change_headcount') }}"
+      # NOTE: Fluctuation Rate (departures / Average Headcount) and YTD departures should be calculated in Tableau 
+      
+  # =========================================================================
+  # agg_fluctuation_metrics_by_department (Powers the Department Bar Charts)
+  # =========================================================================
+  - name: agg_fluctuation_metrics_by_department
+    description: >
+      Time-series aggregation of New Hires and Departures, broken down by department. 
+      This is used to build the bar charts in the "Where, who and why left?" section (New Hires/Leavers over time by Department).
+      
+    columns:
+      - name: time_period
+        description: "{{ doc('agg_time_period') }}"
+      - name: event_start_date
+        description: "{{ doc('agg_event_start_date') }}"
+      - name: department_name
+        description: "{{ doc('department_name_doc') }}"
+      - name: new_hires
+        description: "{{ doc('agg_new_hires') }}"
+      - name: departures
+        description: "{{ doc('agg_departures') }}"
+      - name: headcount
+        description: "{{ doc('agg_headcount') }}"
