@@ -1,0 +1,124 @@
+version: 2
+
+models:
+  - name: s_departments
+    description: >
+      A cleaned staging table for department data, performing basic type casting.
+      This table reads directly from the raw departments table in the BRONZE schema.
+    columns:
+      - name: department_id
+        description: "{{ doc('department_id_doc') }}"
+        tests:
+          - unique
+          - not_null
+      - name: department_name
+        description: "{{ doc('department_name_doc') }}"
+
+  - name: s_departures
+    description: >
+      A cleaned staging table for departure data, performing basic type casting.
+      This table reads directly from the raw departures table in the BRONZE schema.
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - employee_id
+            - exit_date
+      - expect_no_records:
+            where_condition: "exit_date > CURRENT_DATE()"
+    columns:
+      - name: employee_id
+        description: "{{ doc('employee_id_doc') }}"
+        tests:
+          - not_null
+      - name: exit_date
+        description: "{{ doc('exit_date_doc') }}"
+      - name: exit_reason_code
+        description: "{{ doc('exit_reason_code_doc')}}"
+
+  - name: s_dept_emp
+    description: >
+      A cleaned staging table for employee to department data, performing basic type casting.
+      This table reads directly from the raw dept_emp table in the BRONZE schema.
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - employee_id
+            - department_id
+    columns:
+      - name: employee_id
+        description: "{{ doc('employee_id_doc') }}"
+        tests:
+          - not_null
+      - name: department_id
+        tests:
+          - not_null
+        description: "{{ doc('department_id_doc') }}"
+
+  - name: s_dept_manager
+    description: >
+      A cleaned staging table for manager department data, performing basic type casting.
+      This table reads directly from the raw dept_manager table in the BRONZE schema.
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - employee_id
+            - department_id
+    columns:
+      - name: employee_id
+        description: "{{ doc('employee_id_doc') }}"
+        tests:
+          - not_null
+      - name: department_id
+        tests:
+          - not_null
+        description: "{{ doc('department_id_doc') }}"
+
+  - name: s_employees
+    description: >
+      A cleaned staging table for employee data, performing basic type casting.
+      This table reads directly from the raw employees table in the BRONZE schema.
+    tests:
+      # Test that ensures no employee was hired before they were born
+      # Test that ensures dates are not in the future
+      - expect_no_records:
+            where_condition: "hire_date < birth_date
+            OR hire_date > CURRENT_DATE()
+            OR birth_date > CURRENT_DATE()"
+    columns:
+      - name: employee_id
+        description: "{{ doc('employee_id_doc') }}"
+        tests:
+          - unique
+          - not_null
+      - name: employee_title_id
+        description: "{{ doc('title_id_doc') }}"
+      - name: first_name
+      - name: last_name
+      - name: sex
+      - name: hire_date
+
+  - name: s_salaries
+    description: >
+      A cleaned staging table for salary data, performing basic type casting.
+      This table reads directly from the raw salaries table in the BRONZE schema.
+    columns:
+      - name: employee_id
+        description: "{{ doc('employee_id_doc') }}"
+        tests:
+          - not_null
+          - unique
+      - name: salary_amount
+        description: "{{ doc('salary_amount_doc') }}"
+
+  - name: s_titles
+    description: >
+      A cleaned staging table for title data, performing basic type casting.
+      This table reads directly from the raw titles table in the BRONZE schema.
+    columns:
+      - name: title_id
+        description: "{{ doc('title_id_doc') }}"
+        tests:
+          - not_null
+          - unique
+      - name: title
+        description: "{{ doc('title_doc') }}"

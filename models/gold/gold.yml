@@ -1,0 +1,118 @@
+version: 2
+
+models:
+  - name: departments
+    description: >
+      A cleaned departments table ready for analysis.
+    columns:
+      - name: department_id
+        description: "{{ doc('department_id_doc') }}"
+        tests:
+          - unique
+          - not_null
+      - name: department_name
+        description: "{{ doc('department_name_doc') }}"
+
+  - name: departures
+    description: >
+      A cleaned departures table ready for analysis.  Shows employees who have left the company and when they left
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - employee_id
+            - exit_date
+      - expect_no_records:
+            where_condition: "exit_date > CURRENT_DATE()"
+    columns:
+      - name: employee_id
+        description: "{{ doc('employee_id_doc') }}"
+        tests:
+          - not_null
+          - unique
+      - name: exit_date
+        description: "{{ doc('exit_date_doc') }}"
+      - name: exit_reason_code
+        description: "{{ doc('exit_reason_code_doc')}}"
+
+  - name: dept_emp
+    description: >
+      A cleaned department employee table ready for analysis, showing current department assignments for employees.
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - employee_id
+            - department_id
+    columns:
+      - name: employee_id
+        description: "{{ doc('employee_id_doc') }}"
+        tests:
+          - not_null
+      - name: department_id
+        tests:
+          - not_null
+        description: "{{ doc('department_id_doc') }}"
+
+  - name: dept_manager
+    description: >
+      A cleaned department manager table ready for analysis, showing current department manager assignments.
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - employee_id
+            - department_id
+    columns:
+      - name: employee_id
+        description: "{{ doc('employee_id_doc') }}"
+        tests:
+          - not_null
+      - name: department_id
+        tests:
+          - not_null
+        description: "{{ doc('department_id_doc') }}"
+
+  - name: employees
+    description: >
+      A cleaned employees table ready for analysis.
+    tests:
+      # Test that ensures no employee was hired before they were born
+      # Test that ensures dates are not in the future
+      - expect_no_records:
+            where_condition: "hire_date < birth_date
+            OR hire_date > CURRENT_DATE()
+            OR birth_date > CURRENT_DATE()"
+    columns:
+      - name: employee_id
+        description: "{{ doc('employee_id_doc') }}"
+        tests:
+          - unique
+          - not_null
+      - name: employee_title_id
+        description: "{{ doc('title_id_doc') }}"
+      - name: first_name
+      - name: last_name
+      - name: sex
+      - name: hire_date
+
+  - name: salaries
+    description: >
+      A cleaned salaries table ready for analysis, showing current salary information for employees.
+    columns:
+      - name: employee_id
+        description: "{{ doc('employee_id_doc') }}"
+        tests:
+          - not_null
+          - unique
+      - name: salary_amount
+        description: "{{ doc('salary_amount_doc') }}"
+
+  - name: titles
+    description: >
+      A cleaned titles table ready for analysis.
+    columns:
+      - name: title_id
+        description: "{{ doc('title_id_doc') }}"
+        tests:
+          - not_null
+          - unique
+      - name: title
+        description: "{{ doc('title_doc') }}"
