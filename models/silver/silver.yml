@@ -122,3 +122,14 @@ models:
           - unique
       - name: title
         description: "{{ doc('title_doc') }}"
+
+  - name: s_exit_reasons
+    description: >
+      A cleaned staging table exit reason names
+      Note: these are assumed values from a seed file - correct mapping needs to happen
+    columns:
+      - name: exit_reason_code
+        tests:
+          - not_null
+          - unique
+      - name: exit_reason_name

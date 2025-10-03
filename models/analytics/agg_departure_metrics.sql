@@ -22,7 +22,7 @@ WITH get_age_and_generation AS (
         , last_name
         , sex
         , hire_date
-    FROM {{ ref('employees') }}
+    FROM {{ ref('dim_employees') }}
     )
 
 , get_exit_date as (
@@ -38,10 +38,13 @@ WITH get_age_and_generation AS (
         , e.hire_date
         , d.exit_date
         , d.exit_reason_code
+        , er.exit_reason_name
         , DATEDIFF('year', e.hire_date, d.exit_date) as tenure_years
     FROM get_age_and_generation e
-    LEFT JOIN {{ ref('departures') }} d 
+    INNER JOIN {{ ref('fct_departures') }} d 
         ON e.employee_id = d.employee_id
+    LEFT JOIN {{ ref('dim_exit_reasons') }} er 
+        ON d.exit_reason_code = er.exit_reason_code
     )
 
 , get_tenure_group as (

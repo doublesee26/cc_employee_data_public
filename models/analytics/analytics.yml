@@ -28,6 +28,7 @@ models:
         description: "{{ doc('exit_date_doc') }}"
       - name: exit_reason_code
         description: "{{ doc('exit_reason_code_doc') }}"
+      - name: exit_reason_name
       - name: tenure_years
         description: Employee's total years of service (Years between Hire Date and Exit Date).
       - name: tenure_group
