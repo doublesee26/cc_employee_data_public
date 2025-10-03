@@ -1,6 +1,6 @@
 # Project Handover Documentation: Employee Fluctuation Reporting
 
-This project successfully built a robust **dbt data pipeline** that aggregates raw HR data into three highly efficient Analytics Layer tables, specifically designed to power the **Employee Fluctuation Dashboard** in Tableau.
+This project successfully built a robust **dbt data pipeline** that aggregates raw HR data into three highly efficient Analytics Layer tables, specifically designed to power the **[Employee Fluctuation Dashboard](https://public.tableau.com/app/profile/starschema/viz/Fluctuationreport/Fluctuationreport)** in Tableau.
 
 To build and maintain the Tableau report, you only need to connect to these three final aggregate models (all located under the **Analytics schema**). The core business logic (e.g., Age, Generation, Headcount, Percent Change) is **pre-calculated** within these models.
 
