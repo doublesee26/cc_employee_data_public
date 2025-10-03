@@ -65,7 +65,8 @@ The three primary Analytics models are the final consumption layer:
 
 * `agg_departure_metrics`
 
-<img width="1216" height="450" alt="image" src="https://github.com/user-attachments/assets/4c9acd97-c89b-43eb-915f-5ee81970b872" />
+<img width="1029" height="341" alt="image" src="https://github.com/user-attachments/assets/411aa7bb-ceca-404b-93fb-f30cc9915fd7" />
+
 
 
 ## 🚀 Future Updates and Recommendations
@@ -76,7 +77,14 @@ The current pipeline is functional but relies on several assumptions due to limi
 
 1. **Date Ingestion Reliability:** Investigate and fix the date data ingestion issues noted during setup. Ensuring smoother pipeline functionality requires robust date parsing at the earliest stage possible (Bronze/Silver).
 
-2. **Reason Code Mapping:** The analysis currently uses `exit_reason_code`. A future update must provide a **mapping table** to match these codes to human-readable reason descriptions to make the 'Why did they leave?' chart actionable.
+2. **Reason Code Mapping:** The analysis currently uses a seed file (`exit_reasons.csv`) for `exit_reason_name`.
+
+   To facilitate a smoother initial transition, **arbitrary reason names** (e.g., 'Salary', 'Family reason', etc.) were used in this seed file to make the 'Why did they leave?' chart actionable immediately.
+
+   **ACTION REQUIRED:** These are not the client's final, approved reason descriptions. A future update must provide the correct mapping to ensure data accuracy. This can be achieved via one of two methods:
+
+   * **Option A (Simplest):** Directly update the existing `exit_reasons.csv` seed file with the final, correct human-readable reason names.
+   * **Option B (More Robust):** Include the full, official reason code mapping table in the **Bronze layer** and update the dbt staging model to pull the reason names from this new Bronze source table instead of the seed file.
 
 3. **Target Data:** Target headcount data is missing. This is essential for comparing actual headcount against business goals. A staging table (`department_targets`) needs to be created and ingested.
 
