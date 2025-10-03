@@ -8,9 +8,9 @@ WITH bring_in_department as (
         ef.*
         , d.department_name
     FROM {{ ref('employee_fluctuations') }} ef 
-    LEFT JOIN {{ ref('dept_emp') }} de 
+    LEFT JOIN {{ ref('fct_department_employee') }} de 
         ON ef.employee_id = de.employee_id
-    LEFT JOIN {{ ref('departments') }} d 
+    LEFT JOIN {{ ref('dim_departments') }} d 
         ON de.department_id = d.department_id 
 )
 

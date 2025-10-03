@@ -1,7 +1,7 @@
 version: 2
 
 models:
-  - name: departments
+  - name: dim_departments
     description: >
       A cleaned departments table ready for analysis.
     columns:
@@ -13,7 +13,7 @@ models:
       - name: department_name
         description: "{{ doc('department_name_doc') }}"
 
-  - name: departures
+  - name: fct_departures
     description: >
       A cleaned departures table ready for analysis.  Shows employees who have left the company and when they left
     tests:
@@ -34,9 +34,10 @@ models:
       - name: exit_reason_code
         description: "{{ doc('exit_reason_code_doc')}}"
 
-  - name: dept_emp
+  - name: fct_department_employee
     description: >
       A cleaned department employee table ready for analysis, showing current department assignments for employees.
+      Note: this is a fact table with the idea that a temporal component will get added (start and end date)
     tests:
       - dbt_utils.unique_combination_of_columns:
           combination_of_columns:
@@ -52,9 +53,10 @@ models:
           - not_null
         description: "{{ doc('department_id_doc') }}"
 
-  - name: dept_manager
+  - name: fct_department_manager
     description: >
       A cleaned department manager table ready for analysis, showing current department manager assignments.
+       Note: this is a fact table with the idea that a temporal component will get added (start and end date)
     tests:
       - dbt_utils.unique_combination_of_columns:
           combination_of_columns:
@@ -70,7 +72,7 @@ models:
           - not_null
         description: "{{ doc('department_id_doc') }}"
 
-  - name: employees
+  - name: dim_employees
     description: >
       A cleaned employees table ready for analysis.
     tests:
@@ -93,9 +95,10 @@ models:
       - name: sex
       - name: hire_date
 
-  - name: salaries
+  - name: fct_salaries
     description: >
       A cleaned salaries table ready for analysis, showing current salary information for employees.
+       Note: this is a fact table with the idea that a temporal component will get added (start and end date)
     columns:
       - name: employee_id
         description: "{{ doc('employee_id_doc') }}"
@@ -105,7 +108,7 @@ models:
       - name: salary_amount
         description: "{{ doc('salary_amount_doc') }}"
 
-  - name: titles
+  - name: dim_titles
     description: >
       A cleaned titles table ready for analysis.
     columns:
