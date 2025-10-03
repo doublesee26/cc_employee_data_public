@@ -65,6 +65,9 @@ The three primary Analytics models are the final consumption layer:
 
 * `agg_departure_metrics`
 
+<img width="1216" height="450" alt="image" src="https://github.com/user-attachments/assets/4c9acd97-c89b-43eb-915f-5ee81970b872" />
+
+
 ## 🚀 Future Updates and Recommendations
 
 The current pipeline is functional but relies on several assumptions due to limitations in the source data. Addressing the following items is critical for long-term scalability and accuracy.
